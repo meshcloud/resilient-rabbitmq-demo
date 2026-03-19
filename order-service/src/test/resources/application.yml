@@ -1,0 +1,8 @@
+# Test configuration overrides
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false   # don't start @RabbitListener containers — no live broker in tests
+      direct:
+        auto-startup: false

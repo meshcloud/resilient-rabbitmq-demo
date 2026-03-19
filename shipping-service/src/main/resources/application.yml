@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: shipping-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8081
+
+logging:
+  level:
+    io.meshcloud: INFO
+    org.springframework.amqp: INFO
