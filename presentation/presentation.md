@@ -330,7 +330,29 @@ Maybe it's a transient network blip.
 
 ---
 
-## Naive approach: Immediate requeue
+## Why does this happen?
+
+Unlike the producer problem, the message **was** received.
+The consumer just couldn't finish the work — this time.
+
+In a distributed system, consumers depend on other systems that can fail:
+
+```
+  Shipping Service
+        │
+        ├── Carrier API     ← temporarily unavailable
+        ├── Database        ← briefly overloaded
+        └── Internal API    ← network timeout
+```
+
+These failures are almost always **transient** — they resolve on their own, given time.
+
+> **What we need:** retry the message — but not immediately.
+> Give the dependency time to recover. With increasing delays between attempts.
+
+---
+
+## Naive fix: Requeue immediately
 
 ```
   Message fails → requeue → immediate retry → fails again → requeue → …
@@ -343,29 +365,50 @@ This creates a **hot retry loop:**
 - Can overwhelm an already struggling dependency
 - Pollutes logs with thousands of identical errors
 
-> **What we really want:** Back off. Wait. Try again later.
-> With increasing delays between each attempt.
+> We need to **back off** between retries — but how?
 
 ---
 
-## The challenge: RabbitMQ has no built-in delay
+## What we really want: Exponential backoff
 
-Unlike some systems, RabbitMQ can't natively say
-*"deliver this message again in 5 minutes."*
+After each failure, wait longer before trying again:
 
-But it *does* have two features we can combine:
+```
+  Attempt 1 fails → wait  1 min  → retry
+  Attempt 2 fails → wait  5 min  → retry
+  Attempt 3 fails → wait 30 min  → retry
+  Attempt 4 fails → wait  1 hr   → retry
+  Attempt 5 fails → wait  8 hrs  → retry (or give up)
+```
+
+This stops the hot loop and gives dependencies room to recover.
+
+But there's a problem.
+
+> **RabbitMQ has no native support for delayed delivery.**
+> You can't tell it: *"re-deliver this message in 5 minutes."*
+
+So how do we build delays from standard RabbitMQ features?
+
+---
+
+## The insight: DLX + TTL = a delay line
+
+RabbitMQ *does* give us two primitives we can combine:
 
 ### Dead-Letter Exchanges (DLX)
 
-When a message expires or is rejected, RabbitMQ can automatically
-route it to a different queue.
+When a message **expires or is rejected**, RabbitMQ routes it to a configured
+exchange — automatically.
 
 ### Message TTL (Time-To-Live)
 
-A queue can be configured so that messages expire after a fixed duration.
+A queue can be configured so that messages **expire after a fixed duration**.
 
-> **Insight:** A queue with TTL + DLX is essentially a **delay line.**
-> Put a message in → wait → it automatically moves to the next queue.
+> **Combine them:** A queue with TTL + DLX is a **delay line.**
+> Message enters → sits for exactly TTL → automatically moves to the next queue.
+
+No plugins. No special infrastructure. Just standard RabbitMQ.
 
 ---
 
@@ -442,6 +485,25 @@ Each queue has exactly one TTL → every message expires on time.
 
 ---
 
+## A note on acknowledgment
+
+For the retry rerouting to work, the consumer needs **control over acknowledgment**.
+
+```
+  Auto-Ack mode:                      Manual-Ack mode:
+  ┌─────────────────────┐             ┌─────────────────────────┐
+  │ Broker acks message │             │ Listener processes      │
+  │ BEFORE listener runs│             │ Interceptor catches     │
+  │                     │             │ Interceptor reroutes    │
+  │ Too late to reroute!│             │ THEN acks               │
+  └─────────────────────┘             └─────────────────────────┘
+```
+
+**Manual acknowledgment** is essential — it lets the consumer
+decide whether to ack (success) or reroute to a retry queue (failure).
+
+---
+
 ## How is the routing done?
 
 The key piece is an **interceptor** that wraps around your message listener:
@@ -497,24 +559,6 @@ In practice, we use **two retry strategies together:**
 
 ---
 
-## A note on acknowledgment
-
-For the interceptor to reroute failed messages, it needs **control over acknowledgment**.
-
-```
-  Auto-Ack mode:                      Manual-Ack mode:
-  ┌─────────────────────┐             ┌─────────────────────────┐
-  │ Broker acks message │             │ Listener processes      │
-  │ BEFORE listener runs│             │ Interceptor catches     │
-  │                     │             │ Interceptor reroutes    │
-  │ Too late to reroute!│             │ THEN acks               │
-  └─────────────────────┘             └─────────────────────────┘
-```
-
-**Manual acknowledgment** is essential — it lets the interceptor
-decide whether to ack (success) or reroute (failure).
-
----
 
 ## ✅ Consumer Problem — Solved
 
