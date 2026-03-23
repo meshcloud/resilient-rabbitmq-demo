@@ -123,16 +123,17 @@ style: |
 
 ## Why this talk?
 
-- We needed a simple but reliable messaging solution at meshcloud
-- The pieces existed in blog posts, but wiring them together end-to-end in Spring Boot took real effort
-- I want to share a **complete, working example** — not just the happy path
+- We needed a **simple but reliable** messaging solution at meshcloud
+- Pieces existed in blog posts — wiring them together end-to-end took real effort
+- A **complete, working example** — not just the happy path
+
+<!--
+The pieces existed scattered across blog posts, but no single complete example showed how to wire everything together end-to-end in Spring Boot.
+-->
 
 ---
 
 ## Setting the Scene
-
-Let's get into it with the most classic example.
-We're building an e-commerce flow: **two services, one message queue.**
 
 ```
   ┌───────────────┐                              ┌──────────────────┐
@@ -144,11 +145,11 @@ We're building an e-commerce flow: **two services, one message queue.**
        orders DB                                    ships orders
 ```
 
-Sounds simple. An order comes in, we publish a message, shipping picks it up.
+> **But what can go wrong?** *Spoiler: quite a lot.*
 
-**But what can go wrong?**
-
-*Spoiler: quite a lot.*
+<!--
+Classic e-commerce flow: two services, one message queue. An order comes in, we publish a message, shipping picks it up. Sounds simple — but there are several failure scenarios to address.
+-->
 
 ---
 
@@ -170,10 +171,9 @@ Sounds simple. An order comes in, we publish a message, shipping picks it up.
    ⑤ Shipping Service initiates shipping  ✅
 ```
 
-This works perfectly — **as long as nothing ever fails.**
-
-But we're building distributed systems. Things *will* fail.
-Let's walk through the failure scenarios, one by one.
+<!--
+This works perfectly — as long as nothing ever fails. But we're building distributed systems. Things will fail. Let's walk through the failure scenarios one by one.
+-->
 
 ---
 
@@ -195,31 +195,31 @@ Let's walk through the failure scenarios, one by one.
         │                           │                          │
 ```
 
-The order is saved. The customer got a confirmation.
+**Order saved. Shipping never notified. Silent data loss.**
 
-But the shipping service **never finds out about it.** Silent data loss.
+<!--
+The order is saved and the customer got a confirmation — but the shipping service never finds out about it.
+-->
 
 ---
 
 ## Why does this happen?
 
-We're trying to do **two things that aren't atomic:**
+Two operations. **Not atomic.**
 
 ```
   ┌────── DB Transaction ──────┐
   │  INSERT INTO orders (…)    │        publish("ORDER_CREATED")
   └────────────────────────────┘              ▲
                                               │
-                                    This is NOT part of
-                                    the transaction!
+                                    NOT part of the transaction!
 ```
 
-The database commit and the message publish are **two separate operations**.
+> You can't transact across two different systems (DB + broker).
 
-If either one fails after the other succeeds, we're in an inconsistent state.
-
-> You might think: "Just put the publish inside the transaction!"
-> But the broker is a different system — you can't transact across both.
+<!--
+The database commit and the message publish are two separate operations. If either one fails after the other succeeds, we're in an inconsistent state. You might think: "Just put the publish inside the transaction!" But the broker is a different system — you can't transact across both.
+-->
 
 ---
 
@@ -230,36 +230,38 @@ If either one fails after the other succeeds, we're in an inconsistent state.
   INSERT INTO orders (…)     ✗   DB fails!
 ```
 
-Now shipping processes an order that **doesn't exist** — a phantom event.
+→ Shipping processes an order that **doesn't exist** — a phantom event.
 
-Swap the order? Same problem, different direction.
+> **There is no safe ordering.**
+> DB + broker = two systems, no atomic update.
 
-> **There is no safe ordering.** The fundamental issue is that we have
-> **two systems** (DB + broker) that we need to update **atomically**.
+<!--
+Swapping the order has the same problem in the other direction. The fundamental issue is two systems that need to be updated atomically — which isn't possible without the outbox pattern.
+-->
 
 ---
 
 ## Solution: The Transactional Outbox
 
-**Core idea:** Don't publish to the broker directly. Instead, write the event
-to an **outbox table in the same database**, in the **same transaction**.
+> Write the event to an **outbox table in the same DB transaction**
 
 ```
-  ┌─────────── Single DB Transaction ──────────┐
+  ┌─────────── Single DB Transaction ───────────┐
   │                                             │
   │  INSERT INTO orders (…)                     │
-  │  INSERT INTO outbound_events (…, sent=false)│
+  │  INSERT INTO outbound_events (…)            │
   │                                             │
   └─────────────────────────────────────────────┘
 ```
 
-**Either both rows commit, or neither does.** The event can never be lost.
+A background **scheduler** (every ~1s):
+1. Reads unsent events
+2. Publishes to broker
+3. Marks as sent
 
-A background **scheduler** (polling every ~1 second) then:
-
-1. Reads unsent events from the outbox table
-2. Publishes them to the broker
-3. Marks them as sent if successfully delivered
+<!--
+Core idea: Don't publish to the broker directly. Instead, write the event to an outbox table in the same database, in the same transaction. Either both rows commit, or neither does — the event can never be lost.
+-->
 
 ---
 
@@ -280,14 +282,15 @@ A background **scheduler** (polling every ~1 second) then:
   │                                                │
   │   Scheduler (every 1s)                         │
   │      │                                         │
-  │      ├── SELECT unsent events (SKIP LOCKED)    │
+  │      ├── SELECT unsent events    │
   │      ├── Publish to broker                     │
   │      └── Mark as sent                          │
   └────────────────────────────────────────────────┘
 ```
 
-The publish is **decoupled** from the business operation. If the broker is down,
-events simply queue up in the database and get published once it's back.
+<!--
+The publish is fully decoupled from the business operation. If the broker is down, events simply queue up in the database and get published once it's back.
+-->
 
 ---
 
@@ -301,8 +304,9 @@ events simply queue up in the database and get published once it's back.
 | Multiple instances | `SKIP LOCKED` — no conflicts           |
 | Poison events      | Retry counter with circuit breaker     |
 
-> **Rule of thumb:** Never publish to a broker outside of a transaction.
-> Save the event where you save the data.
+<!--
+Rule of thumb: Never publish to a broker outside of a transaction. Save the event where you save the data.
+-->
 
 ---
 
@@ -317,38 +321,27 @@ events simply queue up in the database and get published once it's back.
         │                     │                      │
         │                     │  ──── deliver ─────► │
         │                     │                      ├── parse ✅
-        │                     │                      ├── call API ✗ timeout!
+        │                     │                      ├── ✗ temporary failure!
         │                     │                      │
 ```
 
-The message was delivered, but the consumer failed to process it.
+**Message delivered. Processing failed with temporary failure (e.g. timeout, network issue, etc)**
 
-Maybe a downstream API is down. Maybe the database is overloaded.
-Maybe it's a transient network blip.
-
-**What should happen next?**
+<!--
+The message was delivered, but the consumer failed to process it. Maybe a downstream API is down. Maybe the database is overloaded. Maybe it's a transient network blip.
+-->
 
 ---
 
-## Why does this happen?
+## Naive Thought
 
-Unlike the producer problem, the message **was** received.
-The consumer just couldn't finish the work — this time.
+"RabbitMq will handle it for us automatically."
 
-In a distributed system, consumers depend on other systems that can fail:
+No, in a default set up it may put it on a Dead Letter Queue and you have to manualyl handle it
 
-```
-  Shipping Service
-        │
-        ├── Carrier API     ← temporarily unavailable
-        ├── Database        ← briefly overloaded
-        └── Internal API    ← network timeout
-```
-
-These failures are almost always **transient** — they resolve on their own, given time.
-
-> **What we need:** retry the message — but not immediately.
-> Give the dependency time to recover. With increasing delays between attempts.
+<!--
+Unlike the producer problem, the message was received. The consumer just couldn't finish the work — this time. What we need: retry the message — but not immediately. Give the dependency time to recover. With increasing delays between attempts.
+-->
 
 ---
 
@@ -358,20 +351,20 @@ These failures are almost always **transient** — they resolve on their own, gi
   Message fails → requeue → immediate retry → fails again → requeue → …
 ```
 
-This creates a **hot retry loop:**
-
-- Burns CPU and network for nothing
-- Doesn't give the downstream system time to recover
-- Can overwhelm an already struggling dependency
+**Problems:**
+- Burns CPU & network for nothing
+- Overwhelms an already struggling dependency
 - Pollutes logs with thousands of identical errors
 
-> We need to **back off** between retries — but how?
+> We need to **back off** between retries.
+
+<!--
+This creates a hot retry loop. It doesn't give the downstream system time to recover.
+-->
 
 ---
 
 ## What we really want: Exponential backoff
-
-After each failure, wait longer before trying again:
 
 ```
   Attempt 1 fails → wait  1 min  → retry
@@ -381,40 +374,34 @@ After each failure, wait longer before trying again:
   Attempt 5 fails → wait  8 hrs  → retry (or give up)
 ```
 
-This stops the hot loop and gives dependencies room to recover.
+> **RabbitMQ has no native delayed delivery.**
+> → Build it from standard features.
 
-But there's a problem.
-
-> **RabbitMQ has no native support for delayed delivery.**
-> You can't tell it: *"re-deliver this message in 5 minutes."*
-
-So how do we build delays from standard RabbitMQ features?
+<!--
+This stops the hot loop and gives dependencies room to recover. But RabbitMQ doesn't support delayed delivery natively — so we need to build delays ourselves using DLX + TTL.
+-->
 
 ---
 
 ## The insight: DLX + TTL = a delay line
 
-RabbitMQ *does* give us two primitives we can combine:
-
 ### Dead-Letter Exchanges (DLX)
+When a message **expires or is rejected** → routed to a configured exchange automatically.
 
-When a message **expires or is rejected**, RabbitMQ routes it to a configured
-exchange — automatically.
+### Message TTL
+A queue can **expire messages** after a fixed duration.
 
-### Message TTL (Time-To-Live)
+> **TTL + DLX = delay line:**
+> Message enters → sits for TTL → moves to next queue.
+> No plugins. Standard RabbitMQ only.
 
-A queue can be configured so that messages **expire after a fixed duration**.
-
-> **Combine them:** A queue with TTL + DLX is a **delay line.**
-> Message enters → sits for exactly TTL → automatically moves to the next queue.
-
-No plugins. No special infrastructure. Just standard RabbitMQ.
+<!--
+Combining these two primitives gives us exactly what we need. A queue with TTL + DLX acts as a delay line: the message enters, waits for exactly the TTL, and is then automatically forwarded to the next exchange/queue.
+-->
 
 ---
 
 ## Solution: The Retry Ladder
-
-Stack multiple delay queues with increasing TTLs:
 
 ```
   Consumer fails
@@ -438,35 +425,18 @@ Stack multiple delay queues with increasing TTLs:
                                      Consumer retries
 ```
 
----
-
-## Retry Ladder: The flow step by step
-
-**Attempt 1:** Consumer receives message → fails.
-Route to **retry-1**. Message sits for 1 minute.
-
-**Attempt 2:** Message returns via DLX → consumer retries → fails again.
-Route to **retry-2**. Message sits for 5 minutes.
-
-**Attempt 3:** Returns again → fails → **retry-3** (30 min).
-
-**Attempt 4:** Returns again → fails → **retry-4** (1 hour).
-
-**Attempt 5:** Returns again → fails → **retry-5** (8 hours).
-
-**After all retries exhausted:** Message stays in the last retry queue.
-It acts as a **soft dead-letter queue** where operators can inspect and intervene.
-
-> The system gives the failing dependency **time to recover**.
-> Most transient issues resolve within the first few retries.
+<!--
+Attempt 1: Consumer receives message → fails. Route to retry-1. Message sits for 1 minute.
+Attempt 2: Message returns via DLX → consumer retries → fails again. Route to retry-2. Message sits for 5 minutes. And so on.
+After all retries exhausted: Message stays in the last retry queue, acting as a soft dead-letter queue where operators can inspect and intervene.
+The system gives the failing dependency time to recover — most transient issues resolve within the first few retries.
+-->
 
 ---
 
 ## Why separate queues per TTL level?
 
-A critical RabbitMQ detail most people don't know:
-
-> **TTL expiry is checked only at the head of the queue (FIFO).**
+> **TTL expiry is only checked at the head of the queue (FIFO).**
 
 ```
   Single queue with mixed TTLs:
@@ -475,19 +445,41 @@ A critical RabbitMQ detail most people don't know:
   └─────────────────────────────────────────────┘
   ▲ head                                   tail ▲
 
-  msg(1min) can't expire until msg(30min) does!
+  msg(1min) can't expire until msg(30min) does! ← head-of-line blocking
 ```
 
-This causes **head-of-line blocking** — shorter delays are stuck behind longer ones.
+**→ One dedicated queue per TTL level.**
 
-**Solution:** One dedicated queue per TTL level.
-Each queue has exactly one TTL → every message expires on time.
+<!--
+A critical RabbitMQ detail most people don't know: if you mix different TTLs in one queue, shorter delays get stuck behind longer ones. The solution: one dedicated queue per TTL level, so every message expires on time.
+-->
+
+---
+
+## The `retry-wait-ended` queue explained
+
+All 5 retry queues dead-letter their **TTL-expired messages to one central queue**:
+
+A `@RabbitListener` on `retry-wait-ended` re-publishes each message back to where it came from:
+
+```kotlin
+@RabbitListener(queues = ["retry-wait-ended"])
+fun onMessage(message: Message) {
+    val exchange   = headers["x-original-exchange"]    as String
+    val routingKey = headers["x-original-routing-key"] as String
+    rabbitTemplate.send(exchange, routingKey, message) // back to original queue
+}
+```
+
+> The interceptor **stamps `x-original-exchange` + `x-original-routing-key` on the very first failure** — that's how the listener always knows where to route back.
+
+<!--
+The retry-wait-ended queue is a single funnel. All five retry queues drain into it when their TTL fires. The RetryQueueInterceptor writes x-original-exchange and x-original-routing-key headers when it handles the very first failure. Those headers travel with the message through every hop of the retry ladder. When the message finally reaches retry-wait-ended, the RetryWaitEndedRabbitListener reads those two headers and re-publishes to the original destination. The x-retried-count header is also preserved, so when the consumer attempts processing again the interceptor knows how many retries have already happened.
+-->
 
 ---
 
 ## A note on acknowledgment
-
-For the retry rerouting to work, the consumer needs **control over acknowledgment**.
 
 ```
   Auto-Ack mode:                      Manual-Ack mode:
@@ -499,50 +491,47 @@ For the retry rerouting to work, the consumer needs **control over acknowledgmen
   └─────────────────────┘             └─────────────────────────┘
 ```
 
-**Manual acknowledgment** is essential — it lets the consumer
-decide whether to ack (success) or reroute to a retry queue (failure).
+**→ Manual ack is essential** for retry rerouting.
+
+<!--
+For the retry rerouting to work, the consumer needs control over acknowledgment. Auto-Ack mode acknowledges the message before the listener runs — too late to reroute. Manual acknowledgment lets the consumer decide whether to ack (success) or reroute to a retry queue (failure).
+-->
 
 ---
 
 ## How is the routing done?
 
-The key piece is an **interceptor** that wraps around your message listener:
+An **interceptor** wraps around your message listener:
 
 ```
-  Message arrives at consumer
+  Message arrives
            │
            ▼
   ┌── Interceptor ──────────────────────────────────┐
-  │                                                  │
   │   Try: run the actual listener logic             │
   │                                                  │
   │   Catch: on failure →                            │
-  │     1. Read retry count from message headers     │
+  │     1. Read retry count from headers             │
   │     2. Pick the right retry queue                │
   │     3. Stamp original exchange + routing key     │
-  │        into headers (so we know where to         │
-  │        re-publish later)                         │
-  │     4. Send message to retry queue               │
+  │     4. Send to retry queue                       │
   │     5. Ack the original delivery                 │
-  │                                                  │
   └──────────────────────────────────────────────────┘
 ```
 
-This is AOP — a cross-cutting concern wired in as **middleware**, not scattered
-through your business logic.
+<!--
+This is AOP — a cross-cutting concern wired in as middleware, not scattered through your business logic. The interceptor handles all retry routing transparently.
+-->
 
 ---
 
 ## Two layers of retry
-
-In practice, we use **two retry strategies together:**
 
 ```
   Message arrives
        │
        ▼
   ┌─── Layer 1: In-Process Retry ─────────────────┐
-  │                                               │
   │  Attempt 1 → fail                             │
   │  Attempt 2 (after 0.5s) → fail                │   Fast. In-memory.
   │  Attempt 3 (after 1.0s) → fail                │   For network blips.
@@ -551,7 +540,6 @@ In practice, we use **two retry strategies together:**
        │
        ▼
   ┌─── Layer 2: Retry Ladder (queue-based) ────────┐
-  │                                                │
   │  retry-1 (1 min) → retry-2 (5 min) → …         │   Durable. Escalating.
   │  → retry-3 (30 min) → retry-4 (1h) → retry-5   │   For real outages.
   └────────────────────────────────────────────────┘
@@ -559,20 +547,20 @@ In practice, we use **two retry strategies together:**
 
 ---
 
-
 ## ✅ Consumer Problem — Solved
 
-| Concern               | How the Retry Ladder handles it                       |
-|-----------------------|-------------------------------------------------------|
-| Transient failure     | In-process retry (3 quick attempts)                   |
-| Sustained outage      | Queue-based retry with escalating delays              |
+| Concern               | How the Retry Ladder handles it                        |
+|-----------------------|--------------------------------------------------------|
+| Transient failure     | In-process retry (3 quick attempts)                    |
+| Sustained outage      | Queue-based retry with escalating delays               |
 | Hot retry loops       | Exponential backoff: 1 min → 5 min → 30 min → 1h → 8h |
-| No built-in delay     | DLX + TTL = delay queues using standard features      |
-| Head-of-line blocking | Separate queue per TTL level                          |
-| Dead letters          | Last retry queue acts as soft DLQ for human review    |
+| No built-in delay     | DLX + TTL = delay queues using standard features       |
+| Head-of-line blocking | Separate queue per TTL level                           |
+| Dead letters          | Last retry queue acts as soft DLQ for human review     |
 
-> **The system heals itself.** Most issues resolve within the first
-> few retries. Operators only get involved for the rare persistent failure.
+<!--
+The system heals itself. Most issues resolve within the first few retries. Operators only get involved for the rare persistent failure.
+-->
 
 ---
 
@@ -582,21 +570,18 @@ In practice, we use **two retry strategies together:**
 
 ### At-least-once means duplicates
 
-Both patterns guarantee delivery but **not exactly-once.**
-
-The outbox might re-publish an event if the app crashes between
-publishing and marking the event as sent.
-
-The retry ladder re-delivers messages by design.
-
-**Your consumer must be idempotent.**
-
 ```
   First delivery:    process order → initiate shipping  ✅
   Duplicate:         "Already shipped this order" → skip, ack  ✅
 ```
 
-In practice: track processed IDs (in DB or cache) and skip duplicates.
+**Your consumer must be idempotent.**
+
+> Track processed IDs (DB or cache) — skip duplicates.
+
+<!--
+Both patterns guarantee delivery but not exactly-once. The outbox might re-publish an event if the app crashes between publishing and marking the event as sent. The retry ladder re-delivers messages by design.
+-->
 
 ---
 
@@ -632,43 +617,22 @@ In practice: track processed IDs (in DB or cache) and skip duplicates.
 
 ## Production Reality
 
-We run this exact setup in production. Here's what we've learned:
+### 🙂 It's boring (in the best way)
+No special infrastructure · Standard RabbitMQ only · Minimal maintenance
 
-### It's boring (in the best way)
+### 📊 What to monitor
+- **Outbox table** growing? → broker issue
+- **retry-3/4/5** filling up? → real outage
+- **retry-5 depth** > 0? → human intervention needed
 
-- Minimal maintenance. No special infrastructure.
-- Standard RabbitMQ features only — no plugins, no Debezium, no CDC.
-
-### What to monitor
-
-- **Outbox table:** unsent events accumulating? → broker issue
-- **Late retry queues (retry-3, 4, 5):** messages piling up? → real outage
-- **retry-5 depth:** messages exhausted all retries → human intervention needed
-
-### What it's not
-
-- Not exactly-once *(that's a consensus problem)*
-- Not zero-latency *(outbox polls every ~1s; retries add minutes)*
+### ⚠️ What it's not
+- Not exactly-once
+- Not zero-latency *(outbox ~1s; retries add minutes)*
 - Not a replacement for event sourcing
 
-> **Good enough for the vast majority of use cases.**
-
----
-
-## These Patterns Are Universal
-
-The demo uses Spring Boot + RabbitMQ, but the concepts work anywhere:
-
-| Building Block | RabbitMQ           | Kafka        | SQS                | Any Broker |
-|----------------|--------------------|--------------|--------------------|------------|
-| Delayed retry  | DLX + TTL          | Retry topic  | Visibility timeout | ✅          |
-| Outbox table   | Same-DB TX         | Same-DB TX   | Same-DB TX         | ✅          |
-| Poll & publish | Scheduler          | Scheduler    | Scheduler          | ✅          |
-| Idempotency    | Business key dedup | Offset dedup | Message ID dedup   | ✅          |
-| Dead letters   | Last retry queue   | DLT topic    | SQS DLQ            | ✅          |
-
-> **The outbox table + poll loop works with any broker.**
-> **The retry ladder concept works with any queue that supports TTL or delays.**
+<!--
+We run this exact setup in production. Minimal maintenance, no special infrastructure, standard RabbitMQ features only — no plugins, no Debezium, no CDC.
+-->
 
 ---
 
@@ -676,20 +640,19 @@ The demo uses Spring Boot + RabbitMQ, but the concepts work anywhere:
 
 <br>
 
-**1. Save the event where you save the data.**
-Use a transactional outbox — never publish outside a DB transaction.
+1. **Save the event where you save the data** — transactional outbox
+2. **Retry in two layers** — fast in-process + durable queue-based
+3. **Back off exponentially** — separate queues per TTL, no head-of-line blocking
+4. **Design for idempotency** — at-least-once means duplicates
+5. **Keep it simple** — standard features, no extra infrastructure
 
-**2. Retry in two layers.**
-Fast in-process retries for blips. Durable queue-based retries for outages.
-
-**3. Back off exponentially.**
-Separate queues per TTL level to avoid head-of-line blocking in RabbitMQ.
-
-**4. Design consumers for idempotency.**
-At-least-once delivery means duplicates will happen. Always.
-
-**5. Keep it simple.**
-Standard features. No extra infrastructure. Remarkable stability.
+<!--
+1. Never publish to a broker outside of a DB transaction.
+2. Fast in-process retries for blips. Durable queue-based retries for outages.
+3. Separate queues per TTL level to avoid head-of-line blocking in RabbitMQ.
+4. At-least-once delivery means duplicates will happen. Always.
+5. Standard features. No extra infrastructure. Remarkable stability.
+-->
 
 ---
 
@@ -697,13 +660,7 @@ Standard features. No extra infrastructure. Remarkable stability.
 
 ## Demo Time! 🚀
 
-Let's see it in action — four scenarios:
-
-1. **Happy path** — order created, event published, shipping ships
-2. **Broker down** — outbox retains the event, scheduler retries
-3. **Consumer fails** — retry ladder with exponential backoff
-4. **Duplicate delivery** — idempotency guard skips re-processed messages
-
+Let's see it in action
 ![sheep center height:200px](sheep-demo.png)
 
 ---
@@ -727,15 +684,6 @@ Full source code + setup instructions on GitHub:
 - RabbitMQ Dead-Letter Exchanges — **rabbitmq.com/docs/dlx**
 - Transactional Outbox Pattern — **microservices.io/patterns/data/transactional-outbox**
 
-<br>
-
-| Producer side                 | Consumer side                       |
-|-------------------------------|-------------------------------------|
-| Outbox in same DB             | Retry ladder (DLX + TTL)            |
-| Scheduler polls + publishes   | Interceptor reroutes failures       |
-| `SKIP LOCKED` for concurrency | Manual ack for control              |
-| At-least-once publish         | At-least-once consume + idempotency |
-
 ---
 
 # Backup Slides
@@ -746,21 +694,22 @@ The following slides address some further edge cases that were not covered befor
 
 ## Outbox: What about concurrency?
 
-Multiple instances of the service can poll the outbox concurrently.
-
 **`SELECT … FOR UPDATE SKIP LOCKED`** ensures:
 
 - Each instance locks only the rows it claims
-- Other instances **skip** locked rows instead of waiting
-- No double-publishing, no blocking, no deadlocks
+- Other instances **skip** locked rows — no waiting, no double-publishing
 
 ```
-  Instance A:  locks events [1, 2, 3] → publishes → marks sent
-  Instance B:  skips [1, 2, 3] → locks events [4, 5, 6] → publishes
+  Instance A:  locks [1, 2, 3] → publishes → marks sent
+  Instance B:  skips [1, 2, 3] → locks [4, 5, 6] → publishes
   Instance C:  skips [1–6] → nothing to do → sleeps
 ```
 
-Scales horizontally with zero coordination.
+Scales horizontally with **zero coordination overhead**.
+
+<!--
+Multiple instances of the service can poll the outbox concurrently. SKIP LOCKED ensures no double-publishing, no blocking, no deadlocks.
+-->
 
 ---
 
@@ -770,18 +719,18 @@ Scales horizontally with zero coordination.
   Publish failed?
        │
        ▼
-  Increment retry counter, move to back of queue.
-  Next scheduler tick (1s) → retry.
-       │
-       ▼
+  Increment retry counter → next scheduler tick (1s) retries.
   After 100 failures → poison event → skip + alert.
 
   App crashes between publish and "mark sent"?
        │
        ▼
-  Event is still marked unsent → scheduler picks it up again.
-  Consumer must handle the resulting duplicate (more on that later).
+  Event still marked unsent → scheduler picks it up again.
+  Consumer handles the resulting duplicate (idempotency).
 ```
 
-**Key insight:** The outbox makes the event **durable** in your database.
-It survives app crashes, deployment restarts, and broker outages.
+> The outbox makes events **durable** — survives crashes, restarts, and broker outages.
+
+<!--
+Key insight: The outbox makes the event durable in your database. It survives app crashes, deployment restarts, and broker outages. If the app crashes between publish and mark-as-sent, the event will be re-published — the consumer must handle the resulting duplicate.
+-->
