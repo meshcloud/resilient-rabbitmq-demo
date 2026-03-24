@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="490" viewBox="0 0 780 490">
+<rect width="780" height="490" fill="#ffffff"/>
+<rect x="18" y="14" width="744" height="185" fill="#f7fcfd" rx="10" stroke="#27B8D2" stroke-width="2"/>
+<text x="390" y="36" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">Order Service</text>
+<rect x="50" y="48" width="680" height="88" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="1"/>
+<text x="76" y="68" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">BEGIN TRANSACTION</text>
+<text x="96" y="86" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">INSERT INTO orders (…)</text>
+<text x="96" y="104" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">INSERT INTO outbound_events (…)</text>
+<text x="76" y="124" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">COMMIT</text>
+<text x="76" y="158" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Scheduler → reads unsent events → publishes to broker → marks as sent</text>
+<line x1="390" y1="199" x2="390" y2="228" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,238 384,226 396,226" fill="#27B8D2"/>
+<rect x="280" y="238" width="220" height="32" fill="#FFF9DB" rx="6" stroke="#F5D547" stroke-width="2"/>
+<text x="390" y="257" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="middle">Message Queue</text>
+<line x1="390" y1="270" x2="390" y2="298" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,308 384,296 396,296" fill="#27B8D2"/>
+<rect x="18" y="308" width="744" height="168" fill="#f7fcfd" rx="10" stroke="#27B8D2" stroke-width="2"/>
+<text x="390" y="330" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">Shipping Service</text>
+<rect x="50" y="344" width="680" height="36" fill="#e8f8f0" rx="5" stroke="#27ae60" stroke-width="1"/>
+<text x="76" y="365" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a5c38" font-weight="normal" font-style="normal" text-anchor="start">Layer 1: Quick in-process retry  (3× fast)</text>
+<line x1="280" y1="380" x2="280" y2="394" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="280,404 274,392 286,392" fill="#27B8D2"/>
+<text x="334" y="395" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#a0aec0" font-weight="normal" font-style="italic" text-anchor="middle">if exhausted</text>
+<rect x="50" y="404" width="680" height="36" fill="#FFF9DB" rx="5" stroke="#F5D547" stroke-width="1"/>
+<text x="76" y="425" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Layer 2: Retry Ladder  (1 min → 5 min → 30 min → 1 h → 8 h)</text>
+<line x1="50" y1="450" x2="730" y2="450" stroke="#27B8D2" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="76" y="468" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Idempotency guard → process or skip duplicates</text>
+</svg>

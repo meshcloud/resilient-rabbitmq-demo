@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="145" viewBox="0 0 760 145">
+<rect width="760" height="145" fill="#ffffff"/>
+<rect x="28" y="16" width="290" height="40" fill="#e8f8f0" rx="6" stroke="#27ae60" stroke-width="2"/>
+<text x="173" y="41" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">publish(&quot;ORDER_CREATED&quot;)</text>
+<text x="332" y="41" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a5c38" font-weight="normal" font-style="normal" text-anchor="start">✅  message is on the queue</text>
+<rect x="28" y="72" width="290" height="40" fill="#fff0f0" rx="6" stroke="#e74c3c" stroke-width="2"/>
+<text x="173" y="97" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">INSERT INTO orders (…)</text>
+<text x="332" y="97" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#e74c3c" font-weight="normal" font-style="normal" text-anchor="start">✗   DB fails!</text>
+<text x="332" y="130" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#e74c3c" font-weight="normal" font-style="italic" text-anchor="start">→ Shipping processes an order that doesn&#x27;t exist</text>
+</svg>

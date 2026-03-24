@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="377" viewBox="0 0 760 377">
+<rect width="760" height="345" fill="#ffffff"/>
+<rect x="18" y="18" width="724" height="348" fill="#f7fcfd" rx="10" stroke="#27B8D2" stroke-width="2"/>
+<text x="380" y="42" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">Order Service</text>
+<text x="100" y="66" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">POST /orders</text>
+<line x1="165" y1="70" x2="165" y2="85" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="165,95 159,83 171,83" fill="#27B8D2"/>
+<rect x="54" y="95" width="580" height="105" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="1"/>
+<text x="100" y="116" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">BEGIN TRANSACTION</text>
+<text x="126" y="138" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">INSERT INTO orders (…)</text>
+<text x="126" y="160" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">INSERT INTO outbound_events (…)</text>
+<text x="100" y="182" font-family="'Courier New', monospace" font-size="18" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">COMMIT</text>
+<rect x="54" y="204" width="580" height="28" rx="4" fill="#EDFBF0" stroke="#27AE60" stroke-width="1.5"/>
+<text x="344" y="222" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#27AE60" font-weight="bold" text-anchor="middle">✓ atomic — both rows commit together, or neither does → problem solved!</text>
+<line x1="54" y1="247" x2="682" y2="247" stroke="#a0aec0" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="72" y="270" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Scheduler  (every 1s)</text>
+<circle cx="88" cy="290" r="5" fill="#27B8D2" stroke="#ffffff" stroke-width="2"/>
+<text x="100" y="294" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">SELECT unsent events from outbound_events</text>
+<circle cx="88" cy="312" r="5" fill="#27B8D2" stroke="#ffffff" stroke-width="2"/>
+<text x="100" y="316" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Publish each event to broker</text>
+<circle cx="88" cy="334" r="5" fill="#27B8D2" stroke="#ffffff" stroke-width="2"/>
+<text x="100" y="338" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Mark events as sent</text>
+</svg>

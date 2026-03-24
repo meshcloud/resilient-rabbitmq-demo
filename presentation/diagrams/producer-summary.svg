@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="340" viewBox="0 0 1400 340" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1400" height="340" fill="#ffffff"/>
+
+  <!-- ── Card 1: Atomicity  x=20, cx=148 ── -->
+  <rect x="20" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="20" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="148" cy="100" r="44" fill="#27B8D2"/>
+  <rect x="132" y="104" width="32" height="22" rx="3" fill="none" stroke="white" stroke-width="3.5"/>
+  <path d="M136,104 L136,96 Q148,82 160,96 L160,104" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="148" cy="116" r="3.5" fill="white"/>
+  <rect x="146.5" y="116" width="3.5" height="6" fill="white"/>
+  <text x="148" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Atomicity</text>
+  <text x="148" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Same DB tx as</text>
+  <text x="148" y="246" text-anchor="middle" font-size="21" fill="#6b7280">business data</text>
+
+  <!-- ── Card 2: Broker Down  x=296, cx=424 ── -->
+  <rect x="296" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="296" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="424" cy="100" r="44" fill="#27B8D2"/>
+  <rect x="404" y="83" width="40" height="12" rx="2.5" fill="none" stroke="white" stroke-width="3"/>
+  <rect x="404" y="98" width="40" height="12" rx="2.5" fill="none" stroke="white" stroke-width="3"/>
+  <rect x="404" y="113" width="40" height="12" rx="2.5" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="439" cy="89" r="3" fill="white"/>
+  <circle cx="439" cy="104" r="3" fill="white"/>
+  <circle cx="439" cy="119" r="3" fill="white"/>
+  <text x="424" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Broker Down</text>
+  <text x="424" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Events queue in DB,</text>
+  <text x="424" y="246" text-anchor="middle" font-size="21" fill="#6b7280">published later</text>
+
+  <!-- ── Card 3: App Crash  x=572, cx=700 ── -->
+  <rect x="572" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="572" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="700" cy="100" r="44" fill="#27B8D2"/>
+  <text x="700" y="114" text-anchor="middle" font-size="50" font-weight="800" fill="white">↻</text>
+  <text x="700" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">App Crash</text>
+  <text x="700" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Scheduler retries</text>
+  <text x="700" y="246" text-anchor="middle" font-size="21" fill="#6b7280">unsent events</text>
+
+  <!-- ── Card 4: Scale-Out  x=848, cx=976 ── -->
+  <rect x="848" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="848" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="976" cy="100" r="44" fill="#27B8D2"/>
+  <line x1="960" y1="78" x2="960" y2="122" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <line x1="976" y1="78" x2="976" y2="122" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <line x1="992" y1="78" x2="992" y2="122" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <text x="976" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Scale-Out</text>
+  <text x="976" y="218" text-anchor="middle" font-size="21" fill="#6b7280">SKIP LOCKED —</text>
+  <text x="976" y="246" text-anchor="middle" font-size="21" fill="#6b7280">no conflicts</text>
+
+  <!-- ── Card 5: Poison Events  x=1124, cx=1252 ── -->
+  <rect x="1124" y="10" width="256" height="318" rx="12" fill="#fff9e5" stroke="#f5e29a" stroke-width="1.5"/>
+  <rect x="1124" y="10" width="256" height="8" rx="4" fill="#F5D547"/>
+  <circle cx="1252" cy="100" r="44" fill="#F5D547"/>
+  <polygon points="1252,68 1226,126 1278,126" fill="none" stroke="#1a1a2e" stroke-width="3.5" stroke-linejoin="round"/>
+  <rect x="1250" y="80" width="4.5" height="22" rx="1.5" fill="#1a1a2e"/>
+  <circle cx="1252" cy="112" r="3.5" fill="#1a1a2e"/>
+  <text x="1252" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Poison Events</text>
+  <text x="1252" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Retry counter +</text>
+  <text x="1252" y="246" text-anchor="middle" font-size="21" fill="#6b7280">circuit breaker</text>
+</svg>

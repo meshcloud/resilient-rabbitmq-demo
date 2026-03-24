@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="232" viewBox="0 0 560 232">
+<rect width="560" height="232" fill="#ffffff"/>
+<rect x="20" y="18" width="520" height="28" fill="#27B8D2" rx="5"/>
+<text x="120" y="36" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="bold" font-style="normal" text-anchor="middle">Attempt</text>
+<text x="300" y="36" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="bold" font-style="normal" text-anchor="middle">Backoff</text>
+<text x="450" y="36" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="bold" font-style="normal" text-anchor="middle">Action</text>
+<rect x="20" y="46" width="520" height="34" fill="#ffffff" rx="0"/>
+<text x="120" y="68" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">Attempt 1 fails</text>
+<text x="300" y="68" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">wait  1 min</text>
+<text x="450" y="68" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="middle">→ retry</text>
+<rect x="20" y="80" width="520" height="34" fill="#f0f9fb" rx="0"/>
+<text x="120" y="102" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">Attempt 2 fails</text>
+<text x="300" y="102" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">wait  5 min</text>
+<text x="450" y="102" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="middle">→ retry</text>
+<rect x="20" y="114" width="520" height="34" fill="#ffffff" rx="0"/>
+<text x="120" y="136" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">Attempt 3 fails</text>
+<text x="300" y="136" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">wait 30 min</text>
+<text x="450" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="middle">→ retry</text>
+<rect x="20" y="148" width="520" height="34" fill="#f0f9fb" rx="0"/>
+<text x="120" y="170" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">Attempt 4 fails</text>
+<text x="300" y="170" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">wait  1 hr</text>
+<text x="450" y="170" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="middle">→ retry</text>
+<rect x="20" y="182" width="520" height="34" fill="#ffffff" rx="0"/>
+<text x="120" y="204" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">Attempt 5 fails</text>
+<text x="300" y="204" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="bold" font-style="normal" text-anchor="middle">wait  8 hrs</text>
+<text x="450" y="204" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="middle">→ retry  (or give up)</text>
+<rect x="20" y="18" width="520" height="198" fill="None" rx="5" stroke="#27B8D2" stroke-width="1"/>
+</svg>

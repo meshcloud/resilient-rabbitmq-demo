@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="230" viewBox="0 0 700 230">
+<rect width="700" height="230" fill="#ffffff"/>
+<rect x="18" y="12" width="664" height="92" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="1"/>
+<text x="26" y="32" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Publish failed?</text>
+<line x1="100" y1="38" x2="100" y2="52" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="100,62 94,50 106,50" fill="#27B8D2"/>
+<text x="120" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Increment retry counter</text>
+<text x="120" y="80" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Scheduler retries at next tick (~1 s)</text>
+<text x="120" y="98" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#e74c3c" font-weight="normal" font-style="normal" text-anchor="start">100 failures → skip as poison event + alert</text>
+<rect x="18" y="122" width="664" height="98" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="1"/>
+<text x="26" y="142" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">App crash between publish &amp; mark-sent?</text>
+<line x1="100" y1="148" x2="100" y2="162" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="100,172 94,160 106,160" fill="#27B8D2"/>
+<text x="120" y="172" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Still unsent → scheduler picks it up again</text>
+<text x="120" y="192" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Message gets published another time</text>
+<text x="120" y="210" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#d4a017" font-weight="normal" font-style="normal" text-anchor="start">⚠ Consumer must be idempotent</text>
+</svg>

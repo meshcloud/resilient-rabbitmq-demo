@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="240" viewBox="0 0 780 240">
+  <rect width="780" height="240" fill="#ffffff"/>
+  <rect x="12" y="10" width="356" height="188" fill="#fff5f5" rx="8" stroke="#e74c3c" stroke-width="2"/>
+  <rect x="12" y="10" width="356" height="34" fill="#e74c3c" rx="8"/>
+  <rect x="12" y="30" width="356" height="14" fill="#e74c3c"/>
+  <text x="190" y="33" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#fff" font-weight="bold" text-anchor="middle">AUTO mode (Spring default) &#x274C;</text>
+  <text x="190" y="72" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor reroutes &#x2192; retry queue</text>
+  <text x="190" y="96" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor calls basicReject &#x2713;</text>
+  <text x="190" y="120" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor returns normally</text>
+  <line x1="30" y1="132" x2="350" y2="132" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="190" y="155" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#c0392b" font-weight="bold" text-anchor="middle">Container sees no exception &#x2192;</text>
+  <text x="190" y="179" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#c0392b" font-weight="bold" text-anchor="middle">also calls basicAck &#x1F4A5; double-ack</text>
+  <rect x="412" y="10" width="356" height="188" fill="#f0fbf5" rx="8" stroke="#27ae60" stroke-width="2"/>
+  <rect x="412" y="10" width="356" height="34" fill="#27ae60" rx="8"/>
+  <rect x="412" y="30" width="356" height="14" fill="#27ae60"/>
+  <text x="590" y="33" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#fff" font-weight="bold" text-anchor="middle">MANUAL mode &#x2705;</text>
+  <text x="590" y="72" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor reroutes &#x2192; retry queue</text>
+  <text x="590" y="96" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor calls basicReject &#x2713;</text>
+  <text x="590" y="120" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#1a1a2e" text-anchor="middle">Interceptor returns normally</text>
+  <line x1="430" y1="132" x2="750" y2="132" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="590" y="155" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#27ae60" font-weight="bold" text-anchor="middle">Container: ack is caller's job &#x2192;</text>
+  <text x="590" y="179" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#27ae60" font-weight="bold" text-anchor="middle">does nothing &#x2713;</text>
+  <text x="390" y="228" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#27B8D2" font-style="italic" font-weight="bold" text-anchor="middle">Dynamic rerouting requires basicReject &#x2014; MANUAL ensures only one ack/reject fires</text>
+</svg>

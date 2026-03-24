@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="180" viewBox="0 0 760 180">
+<rect width="760" height="180" fill="#ffffff"/>
+
+<!-- Step 1: Commit succeeds -->
+<rect x="28" y="16" width="310" height="42" fill="#e8f8f0" rx="6" stroke="#27ae60" stroke-width="2"/>
+<text x="183" y="43" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" text-anchor="middle">COMMIT — order saved</text>
+<text x="352" y="43" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#27ae60" font-weight="bold">✓</text>
+
+<!-- Arrow down -->
+<line x1="183" y1="58" x2="183" y2="69" stroke="#a0aec0" stroke-width="1.5"/>
+<polygon points="183,75 177,63 189,63" fill="#a0aec0"/>
+
+<!-- Step 2: Publish fails -->
+<rect x="28" y="74" width="310" height="42" fill="#fff0f0" rx="6" stroke="#e74c3c" stroke-width="2"/>
+<text x="183" y="101" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" text-anchor="middle">publish("ORDER_CREATED")</text>
+<text x="352" y="101" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#e74c3c" font-weight="bold">✗</text>
+<text x="382" y="98" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#e74c3c" font-style="italic">broker down / network error</text>
+
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="125" viewBox="0 0 780 125">
+<rect width="780" height="125" fill="#ffffff"/>
+<rect x="18" y="10" width="744" height="28" fill="#f0f9fb" rx="4" stroke="#27B8D2" stroke-width="1"/>
+<text x="26" y="29" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Instance A:</text>
+<text x="160" y="29" font-family="'Courier New', monospace" font-size="18" fill="#27B8D2" font-weight="normal" font-style="normal" text-anchor="start">locks [1, 2, 3]</text>
+<text x="490" y="29" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#a0aec0" font-weight="normal" font-style="normal" text-anchor="start">→ publishes → marks sent</text>
+<rect x="18" y="43" width="744" height="28" fill="#e8f8f0" rx="4" stroke="#27ae60" stroke-width="1"/>
+<text x="26" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Instance B:</text>
+<text x="160" y="62" font-family="'Courier New', monospace" font-size="18" fill="#27ae60" font-weight="normal" font-style="normal" text-anchor="start">skips [1, 2, 3]  locks [4, 5, 6]</text>
+<text x="490" y="62" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#a0aec0" font-weight="normal" font-style="normal" text-anchor="start">→ publishes</text>
+<rect x="18" y="76" width="744" height="28" fill="#ffffff" rx="4" stroke="#a0aec0" stroke-width="1"/>
+<text x="26" y="95" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Instance C:</text>
+<text x="160" y="95" font-family="'Courier New', monospace" font-size="18" fill="#a0aec0" font-weight="normal" font-style="normal" text-anchor="start">skips [1–6]</text>
+<text x="490" y="95" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#a0aec0" font-weight="normal" font-style="normal" text-anchor="start">→ nothing to do → sleeps</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="224" viewBox="0 0 860 224">
+
+  <!-- Row A: DB ✓, Broker ✗ -->
+  <rect x="16" y="14" width="828" height="90" fill="rgba(255,255,255,0.08)" rx="8" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+
+  <!-- DB pill -->
+  <rect x="32" y="41" width="100" height="36" fill="rgba(255,255,255,0.18)" rx="5" stroke="white" stroke-width="1.5"/>
+  <text x="82" y="65" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="white" font-weight="bold" text-anchor="middle">DB</text>
+  <text x="148" y="65" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#4ade80" text-anchor="middle">✓</text>
+
+  <!-- divider dot -->
+  <text x="172" y="63" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="rgba(255,255,255,0.4)" text-anchor="middle">·</text>
+
+  <!-- Broker pill (fail) -->
+  <rect x="190" y="41" width="126" height="36" fill="rgba(231,76,60,0.25)" rx="5" stroke="#e74c3c" stroke-width="1.5"/>
+  <text x="253" y="65" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="white" font-weight="bold" text-anchor="middle">Broker</text>
+  <text x="330" y="65" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#e74c3c" text-anchor="middle">✗</text>
+
+  <!-- arrow -->
+  <line x1="356" y1="59" x2="406" y2="59" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="412,59 400,53 400,65" fill="rgba(255,255,255,0.4)"/>
+
+  <!-- outcome label -->
+  <text x="424" y="64" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="rgba(255,255,255,0.9)" font-weight="bold">Order saved — Shipping never notified.</text>
+
+  <!-- Row B: DB ✗, Broker ✓ -->
+  <rect x="16" y="120" width="828" height="90" fill="rgba(255,255,255,0.08)" rx="8" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+
+  <!-- DB pill (fail) -->
+  <rect x="32" y="147" width="100" height="36" fill="rgba(231,76,60,0.25)" rx="5" stroke="#e74c3c" stroke-width="1.5"/>
+  <text x="82" y="171" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="white" font-weight="bold" text-anchor="middle">DB</text>
+  <text x="148" y="171" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#e74c3c" text-anchor="middle">✗</text>
+
+  <!-- divider dot -->
+  <text x="172" y="169" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="rgba(255,255,255,0.4)" text-anchor="middle">·</text>
+
+  <!-- Broker pill (ok) -->
+  <rect x="190" y="147" width="126" height="36" fill="rgba(255,255,255,0.18)" rx="5" stroke="white" stroke-width="1.5"/>
+  <text x="253" y="171" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="white" font-weight="bold" text-anchor="middle">Broker</text>
+  <text x="330" y="171" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#4ade80" text-anchor="middle">✓</text>
+
+  <!-- arrow -->
+  <line x1="356" y1="165" x2="406" y2="165" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="412,165 400,159 400,171" fill="rgba(255,255,255,0.4)"/>
+
+  <!-- outcome label -->
+  <text x="424" y="170" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="rgba(255,255,255,0.9)" font-weight="bold">Order not saved — Shipping notified.</text>
+
+</svg>

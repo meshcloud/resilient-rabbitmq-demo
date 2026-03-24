@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="540" viewBox="0 0 780 540">
+<rect width="780" height="540" fill="#ffffff"/>
+
+<!-- Message arrives -->
+<rect x="300" y="10" width="180" height="36" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="390" y="33" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Message arrives</text>
+
+<!-- Arrow: message arrives → interceptor -->
+<line x1="390" y1="46" x2="390" y2="66" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,76 384,64 396,64" fill="#27B8D2"/>
+
+<!-- Interceptor container -->
+<rect x="28" y="76" width="724" height="450" fill="#f0f9fb" rx="8" stroke="#27B8D2" stroke-width="2"/>
+<text x="390" y="99" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#27B8D2" font-weight="bold" text-anchor="middle">Interceptor</text>
+
+<!-- Run listener logic -->
+<rect x="290" y="108" width="200" height="34" fill="#ffffff" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+<text x="390" y="131" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Run listener logic</text>
+
+<!-- Arrow: run listener → decision diamond -->
+<line x1="390" y1="142" x2="390" y2="156" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,166 384,154 396,154" fill="#27B8D2"/>
+
+<!-- Decision diamond: Success? center=(390,190) half-w=64 half-h=24 -->
+<polygon points="390,166 454,190 390,214 326,190" fill="#FFF9DB" stroke="#F5D547" stroke-width="2"/>
+<text x="390" y="195" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Success?</text>
+
+<!-- YES branch → right → ACK box -->
+<line x1="454" y1="190" x2="520" y2="190" stroke="#27ae60" stroke-width="2"/>
+<polygon points="530,190 518,184 518,196" fill="#27ae60"/>
+<text x="490" y="183" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#27ae60" font-weight="bold" text-anchor="middle">YES</text>
+<rect x="530" y="173" width="190" height="34" fill="#e8f8f0" rx="6" stroke="#27ae60" stroke-width="2"/>
+<text x="625" y="195" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a5c38" font-weight="bold" text-anchor="middle">✓ ACK</text>
+
+<!-- NO branch → down → failure flow -->
+<line x1="390" y1="214" x2="390" y2="224" stroke="#e74c3c" stroke-width="2"/>
+<polygon points="390,234 384,222 396,222" fill="#e74c3c"/>
+<text x="400" y="230" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold" text-anchor="start">NO</text>
+
+<!-- Box 1: Read x-retried-count -->
+<rect x="265" y="234" width="250" height="32" fill="#ffffff" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+<text x="390" y="255" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" text-anchor="middle">Read x-retried-count</text>
+
+<!-- Arrow 1 → 2 -->
+<line x1="390" y1="266" x2="390" y2="274" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,284 384,272 396,272" fill="#27B8D2"/>
+
+<!-- Box 2: Increment + pick retry-N queue -->
+<rect x="215" y="284" width="350" height="32" fill="#ffffff" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+<text x="390" y="305" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" text-anchor="middle">Increment + pick retry-N queue</text>
+
+<!-- Arrow 2 → 3 -->
+<line x1="390" y1="316" x2="390" y2="324" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,334 384,322 396,322" fill="#27B8D2"/>
+
+<!-- Box 3: Stamp headers (wide) -->
+<rect x="160" y="334" width="460" height="48" fill="#ffffff" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+<text x="390" y="352" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a1a2e" text-anchor="middle">Stamp x-original-exchange + routing-key</text>
+<text x="390" y="372" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a1a2e" text-anchor="middle">Stamp x-retried-count = N on message</text>
+
+<!-- Arrow 3 → 4 -->
+<line x1="390" y1="382" x2="390" y2="390" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,400 384,388 396,388" fill="#27B8D2"/>
+
+<!-- Box 4: Publish to retry-N queue -->
+<rect x="245" y="400" width="290" height="32" fill="#ffffff" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+<text x="390" y="421" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" text-anchor="middle">Publish to retry-N queue</text>
+
+<!-- Arrow 4 → 5 -->
+<line x1="390" y1="432" x2="390" y2="440" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="390,450 384,438 396,438" fill="#27B8D2"/>
+
+<!-- Box 5: Reject original delivery (red) -->
+<rect x="245" y="450" width="290" height="50" fill="#fdf0ef" rx="6" stroke="#e74c3c" stroke-width="2"/>
+<text x="390" y="470" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#7b1a1a" font-weight="bold" text-anchor="middle">✗ Reject original delivery</text>
+<text x="390" y="490" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#7b1a1a" text-anchor="middle">(no requeue)</text>
+
+</svg>

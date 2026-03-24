@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="340" viewBox="0 0 1400 340" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1400" height="340" fill="#ffffff"/>
+
+  <!-- Card 1: Quick Retry -->
+  <rect x="20" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="20" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="148" cy="100" r="44" fill="#27B8D2"/>
+  <!-- lightning bolt -->
+  <polygon points="155,72 140,103 150,103 143,128 162,97 151,97" fill="white"/>
+  <text x="148" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Quick Retry</text>
+  <text x="148" y="218" text-anchor="middle" font-size="21" fill="#6b7280">3&#xD7; in-process</text>
+  <text x="148" y="246" text-anchor="middle" font-size="21" fill="#6b7280">Spring Retry</text>
+
+  <!-- Card 2: Interceptor -->
+  <rect x="296" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="296" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="424" cy="100" r="44" fill="#27B8D2"/>
+  <!-- funnel shape -->
+  <path d="M406,78 L442,78 L431,100 L431,122 L417,122 L417,100 Z" fill="none" stroke="white" stroke-width="3.5" stroke-linejoin="round"/>
+  <line x1="411" y1="87" x2="437" y2="87" stroke="white" stroke-width="2.5"/>
+  <text x="424" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Interceptor</text>
+  <text x="424" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Catches failures,</text>
+  <text x="424" y="246" text-anchor="middle" font-size="21" fill="#6b7280">routes to ladder</text>
+
+  <!-- Card 3: Backoff Ladder -->
+  <rect x="572" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="572" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="700" cy="100" r="44" fill="#27B8D2"/>
+  <!-- 5 ascending bars: heights 10,16,24,32,40; bottom at y=122 -->
+  <rect x="675" y="112" width="8" height="10" fill="white"/>
+  <rect x="685" y="106" width="8" height="16" fill="white"/>
+  <rect x="695" y="98" width="8" height="24" fill="white"/>
+  <rect x="705" y="90" width="8" height="32" fill="white"/>
+  <rect x="715" y="82" width="8" height="40" fill="white"/>
+  <text x="700" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Backoff Ladder</text>
+  <text x="700" y="218" text-anchor="middle" font-size="21" fill="#6b7280">1m&#x2192;5m&#x2192;30m</text>
+  <text x="700" y="246" text-anchor="middle" font-size="21" fill="#6b7280">&#x2192;1h&#x2192;8h</text>
+
+  <!-- Card 4: Manual Ack -->
+  <rect x="848" y="10" width="256" height="318" rx="12" fill="#f0f9fb" stroke="#d0ecf3" stroke-width="1.5"/>
+  <rect x="848" y="10" width="256" height="8" rx="4" fill="#27B8D2"/>
+  <circle cx="976" cy="100" r="44" fill="#27B8D2"/>
+  <!-- checkmark -->
+  <polyline points="956,100 969,116 998,78" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="976" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">Manual Ack</text>
+  <text x="976" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Prevents Spring</text>
+  <text x="976" y="246" text-anchor="middle" font-size="21" fill="#6b7280">auto-ack conflict</text>
+
+  <!-- Card 5: Separate Queues -->
+  <rect x="1124" y="10" width="256" height="318" rx="12" fill="#fff9e5" stroke="#f5e29a" stroke-width="1.5"/>
+  <rect x="1124" y="10" width="256" height="8" rx="4" fill="#F5D547"/>
+  <circle cx="1252" cy="100" r="44" fill="#F5D547"/>
+  <!-- 3 separate horizontal queue rows with status dots -->
+  <rect x="1226" y="80" width="52" height="13" rx="3" fill="none" stroke="#1a1a2e" stroke-width="2.5"/>
+  <rect x="1226" y="97" width="52" height="13" rx="3" fill="none" stroke="#1a1a2e" stroke-width="2.5"/>
+  <rect x="1226" y="114" width="52" height="13" rx="3" fill="none" stroke="#1a1a2e" stroke-width="2.5"/>
+  <circle cx="1272" cy="86" r="3" fill="#1a1a2e"/>
+  <circle cx="1272" cy="103" r="3" fill="#1a1a2e"/>
+  <circle cx="1272" cy="120" r="3" fill="#1a1a2e"/>
+  <text x="1252" y="185" text-anchor="middle" font-size="26" font-weight="700" fill="#1a1a2e">No HOL Blocking</text>
+  <text x="1252" y="218" text-anchor="middle" font-size="21" fill="#6b7280">Separate queue</text>
+  <text x="1252" y="246" text-anchor="middle" font-size="21" fill="#6b7280">per TTL level</text>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="185" viewBox="0 0 920 185">
+<rect width="920" height="185" fill="#ffffff"/>
+
+<!-- Consumer box (left) -->
+<rect x="20" y="52" width="155" height="82" fill="#fff0f0" rx="6" stroke="#e74c3c" stroke-width="2.5"/>
+<text x="97" y="88" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Consumer</text>
+<text x="97" y="114" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#e74c3c" text-anchor="middle">✗ rejects</text>
+
+<!-- Blue arrow: Work Queue → Consumer (delivery, pointing left) -->
+<line x1="225" y1="83" x2="187" y2="83" stroke="#27B8D2" stroke-width="2.5"/>
+<polygon points="175,83 187,77 187,89" fill="#27B8D2"/>
+
+<!-- Red arrow: Consumer → Work Queue (rejection, pointing right) -->
+<line x1="177" y1="103" x2="213" y2="103" stroke="#e74c3c" stroke-width="2.5"/>
+<polygon points="225,103 213,97 213,109" fill="#e74c3c"/>
+
+<!-- Work Queue box (second) -->
+<rect x="225" y="52" width="185" height="82" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2.5"/>
+<text x="317" y="88" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Work Queue</text>
+<text x="317" y="114" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#27B8D2" text-anchor="middle">x-dead-letter-exchange</text>
+
+<!-- Straight dashed red arrow: Work Queue → DLX (labeled "route") -->
+<line x1="410" y1="93" x2="463" y2="93" stroke="#e74c3c" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="475,93 463,87 463,99" fill="#e74c3c"/>
+<text x="442" y="83" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#e74c3c" font-style="italic" text-anchor="middle">route</text>
+
+<!-- Dead-Letter Exchange (DLX) — yellow -->
+<rect x="475" y="52" width="215" height="82" fill="#FFF9DB" rx="6" stroke="#F5D547" stroke-width="2.5"/>
+<text x="582" y="88" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Dead-Letter</text>
+<text x="582" y="111" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Exchange (DLX)</text>
+
+<!-- Arrow: DLX → DLQ (yellow) -->
+<line x1="690" y1="93" x2="748" y2="93" stroke="#F5D547" stroke-width="2.5"/>
+<polygon points="750,93 738,87 738,99" fill="#F5D547"/>
+
+<!-- Dead Letter Queue (DLQ) — yellow -->
+<rect x="750" y="52" width="150" height="82" fill="#FFF9DB" rx="6" stroke="#F5D547" stroke-width="2.5"/>
+<text x="825" y="88" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Dead Letter</text>
+<text x="825" y="110" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Queue (DLQ)</text>
+</svg>

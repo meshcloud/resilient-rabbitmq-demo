@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="185" viewBox="0 0 620 185">
+<rect width="620" height="185" fill="#ffffff"/>
+
+<!-- Queue with TTL + DLX configured -->
+<rect x="30" y="52" width="180" height="82" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2.5"/>
+<text x="120" y="85" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Queue</text>
+<rect x="38" y="93" width="164" height="22" fill="#FFF9DB" rx="4" stroke="#F5D547" stroke-width="1.2"/>
+<text x="120" y="108" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#a07820" text-anchor="middle">⏰ TTL  ·  DLX configured</text>
+
+<!-- Arrow: queue → TTL clock -->
+<line x1="210" y1="93" x2="252" y2="93" stroke="#F5A020" stroke-width="2.5"/>
+<polygon points="264,93 252,87 252,99" fill="#F5A020"/>
+
+<!-- TTL expires -->
+<text x="294" y="88" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#F5D547" text-anchor="middle">⏰</text>
+<text x="294" y="113" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#a07820" font-weight="bold" text-anchor="middle">TTL expires</text>
+
+<!-- Arrow: TTL clock → DLX -->
+<line x1="325" y1="93" x2="368" y2="93" stroke="#F5A020" stroke-width="2.5"/>
+<polygon points="380,93 368,87 368,99" fill="#F5A020"/>
+
+<!-- Dead-Letter Exchange (DLX) — yellow -->
+<rect x="382" y="52" width="208" height="82" fill="#FFF9DB" rx="6" stroke="#F5D547" stroke-width="2.5"/>
+<text x="486" y="88" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Dead-Letter</text>
+<text x="486" y="111" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#a07820" text-anchor="middle">Exchange (DLX)</text>
+</svg>

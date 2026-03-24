@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="410" viewBox="0 0 720 410">
+<rect width="720" height="410" fill="#ffffff"/>
+<rect x="268" y="10" width="184" height="34" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="360" y="30" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="middle">Message arrives</text>
+<line x1="360" y1="44" x2="360" y2="68" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="360,78 354,66 366,66" fill="#27B8D2"/>
+<rect x="28" y="78" width="664" height="110" fill="#e8f8f0" rx="8" stroke="#27ae60" stroke-width="2"/>
+<text x="52" y="99" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#27ae60" font-weight="bold" font-style="normal" text-anchor="start">Layer 1 — In-Process Retry <tspan font-size="14" font-weight="normal" font-style="italic">(e.g. Spring Retry)</tspan></text>
+<text x="68" y="120" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Attempt 1  → fail</text>
+<text x="68" y="138" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Attempt 2  → fail  (after 0.5 s)</text>
+<text x="68" y="156" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">Attempt 3  → fail  (after 1.0 s)</text>
+<text x="68" y="174" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#e74c3c" font-weight="normal" font-style="normal" text-anchor="start">✗  all attempts exhausted</text>
+<rect x="504" y="88" width="172" height="48" fill="#c8edd8" rx="5" stroke="#27ae60" stroke-width="1"/>
+<text x="590" y="108" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#1a5c38" font-weight="bold" font-style="normal" text-anchor="middle">Fast. In-memory.</text>
+<text x="590" y="126" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#1a5c38" font-weight="normal" font-style="normal" text-anchor="middle">For network blips.</text>
+<line x1="360" y1="188" x2="360" y2="212" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="360,222 354,210 366,210" fill="#27B8D2"/>
+<text x="420" y="210" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#a0aec0" font-weight="normal" font-style="italic" text-anchor="middle">if exhausted</text>
+<rect x="28" y="222" width="664" height="172" fill="#FFF9DB" rx="8" stroke="#F5D547" stroke-width="2"/>
+<text x="52" y="244" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="start">Layer 2 — Retry Ladder  (DLX + TTL)</text>
+<text x="68" y="267" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">retry-1  (1 min)</text>
+<text x="68" y="289" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">retry-2  (5 min)</text>
+<text x="68" y="311" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">retry-3  (30 min)</text>
+<text x="68" y="333" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">retry-4  (1 h)</text>
+<text x="68" y="355" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="start">retry-5</text>
+<rect x="504" y="258" width="172" height="54" fill="#fef3cd" rx="5" stroke="#F5D547" stroke-width="1"/>
+<text x="590" y="279" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#1a1a2e" font-weight="bold" font-style="normal" text-anchor="middle">Durable. Escalating.</text>
+<text x="590" y="298" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">For real outages.</text>
+</svg>

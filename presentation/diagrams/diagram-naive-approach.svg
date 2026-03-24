@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="238" viewBox="0 0 760 238">
+  <rect width="760" height="238" fill="#ffffff"/>
+
+  <!-- Order Service outer box -->
+  <rect x="18" y="16" width="534" height="212" fill="#f7fcfd" rx="10" stroke="#27B8D2" stroke-width="2"/>
+  <text x="195" y="42" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#27B8D2" font-weight="bold" text-anchor="middle">Order Service</text>
+
+  <!-- Transaction inner box -->
+  <rect x="36" y="54" width="498" height="148" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="1.5"/>
+  <text x="62" y="75" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="bold">BEGIN TRANSACTION</text>
+
+  <!-- INSERT INTO orders -->
+  <text x="80" y="106" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e">① INSERT INTO orders (…)</text>
+  <text x="420" y="106" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#27ae60" font-weight="bold">✓</text>
+
+  <!-- publish label -->
+  <text x="80" y="143" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e">② publish(&quot;ORDER_CREATED&quot;)</text>
+
+  <!-- Publish arrow -->
+  <line x1="420" y1="148" x2="610" y2="148" stroke="#27B8D2" stroke-width="2"/>
+  <polygon points="616,148 604,142 604,154" fill="#27B8D2"/>
+
+  <!-- Ack return arrow -->
+  <line x1="610" y1="167" x2="420" y2="167" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <polygon points="414,167 426,161 426,173" fill="#27ae60"/>
+  <text x="515" y="163" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#27ae60" font-weight="bold" text-anchor="middle">ack ✓</text>
+
+  <!-- COMMIT -->
+  <text x="62" y="192" font-family="'Courier New', monospace" font-size="17" fill="#1a1a2e" font-weight="bold">COMMIT</text>
+  <text x="180" y="192" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#27ae60" font-weight="bold">✓</text>
+
+  <!-- Broker box -->
+  <rect x="622" y="126" width="120" height="56" fill="#e8f8f0" rx="6" stroke="#27ae60" stroke-width="2"/>
+  <text x="682" y="150" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="bold" text-anchor="middle">Broker</text>
+  <text x="682" y="171" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#27ae60" text-anchor="middle">message ✓</text>
+</svg>

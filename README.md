@@ -12,25 +12,25 @@ A self-contained demo showing two complementary patterns for reliable messaging 
 ## Architecture
 
 ```
-                  ┌──────────────────────────────────┐
+                  ┌────────────────────────────────────┐
                   │         order-service :8080        │
                   │                                    │
   POST /orders ──►│  OrderService                      │
-                  │   ├─ save Order            ─┐      │
+                  │   ├─ save Order             ─┐     │
                   │   └─ save OutboundEvent     ─┘ tx  │
                   │                                    │
                   │  OutboundEventsScheduler (1 s)     │
                   │   └─ SELECT FOR UPDATE SKIP LOCKED │
                   │       └─ RabbitTemplate.send ──────┼──► exchange: orders
-                  └──────────────────────────────────┘         routing key: orders.created
+                  └────────────────────────────────────┘      routing key: orders.created
                                                                       │
                                                               queue: orders.created
                                                                       │
-                  ┌──────────────────────────────────┐               │
+                  ┌────────────────────────────────────┐              │
                   │       shipping-service :8081       │◄─────────────┘
                   │                                    │
                   │  OrderCreatedListener              │
-                  │   └─ Spring Retry (3×, 0.5–5 s)   │
+                  │   └─ Spring Retry (3×, 0.5–5 s)    │
                   │       └─ RetryQueueInterceptor     │
                   │           ├─ retry-1  (1 min)      │
                   │           ├─ retry-2  (5 min)      │
@@ -38,8 +38,8 @@ A self-contained demo showing two complementary patterns for reliable messaging 
                   │           ├─ retry-4  (1 h)        │
                   │           └─ retry-5  (8 h)        │
                   │               └─ retry-wait-ended  │
-                  │                   └─ re-publish ───┘
-                  └──────────────────────────────────┘
+                  │                   └─ re-publish    │
+                  └────────────────────────────────────┘
 ```
 
 ---
@@ -49,7 +49,7 @@ A self-contained demo showing two complementary patterns for reliable messaging 
 ### Prerequisites
 
 - Docker & Docker Compose
-- Java 17+
+- Java 21+
 - (Gradle wrapper included — no local Gradle needed)
 
 ### 1. Start infrastructure
@@ -136,8 +136,11 @@ curl -s -X POST http://localhost:8080/orders \
 **Expected:**
 
 - Spring Retry makes 3 immediate attempts (visible in logs)
-- `RetryQueueInterceptor` routes message to `retry-1` (TTL 1 min)
-- After 1 minute the message re-appears on `orders.created` and is processed successfully
+- `RetryQueueInterceptor` routes message to `retry-1` (TTL 20s for demo purposes)
+- After 20s the message re-appears on `orders.created` and the 3 Spring retries fail again
+- routes to `retry-2` (TTL: 15s)
+- After 15s the message re-appears on `orders.created` and is successfully processed
+
 
 Watch the queues at http://localhost:15672/#/queues to see the message move through the retry ladder.
 

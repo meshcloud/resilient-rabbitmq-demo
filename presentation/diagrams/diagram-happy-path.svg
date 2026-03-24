@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="380" viewBox="0 0 490 380">
+<rect width="490" height="380" fill="#ffffff"/>
+<rect x="50" y="16" width="390" height="46" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="245" y="44" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">① Customer places order</text>
+<line x1="245" y1="62" x2="245" y2="73" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="245,83 239,71 251,71" fill="#27B8D2"/>
+<rect x="50" y="82" width="390" height="46" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="245" y="110" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">② Order Service saves to DB</text>
+<line x1="245" y1="128" x2="245" y2="139" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="245,149 239,137 251,137" fill="#27B8D2"/>
+<rect x="50" y="148" width="390" height="46" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="245" y="176" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">③ Publishes &quot;ORDER_CREATED&quot; to queue</text>
+<line x1="245" y1="194" x2="245" y2="205" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="245,215 239,203 251,203" fill="#27B8D2"/>
+<rect x="50" y="214" width="390" height="46" fill="#f0f9fb" rx="6" stroke="#27B8D2" stroke-width="2"/>
+<text x="245" y="242" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a1a2e" font-weight="normal" font-style="normal" text-anchor="middle">④ Shipping Service receives message</text>
+<line x1="245" y1="260" x2="245" y2="271" stroke="#27B8D2" stroke-width="2"/>
+<polygon points="245,281 239,269 251,269" fill="#27B8D2"/>
+<rect x="50" y="280" width="390" height="46" fill="#e8f8f0" rx="6" stroke="#27ae60" stroke-width="2"/>
+<text x="245" y="308" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#1a5c38" font-weight="normal" font-style="normal" text-anchor="middle">⑤ Shipping Service: shipping initiated  ✅</text>
+</svg>
