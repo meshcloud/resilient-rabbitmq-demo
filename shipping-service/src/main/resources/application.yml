@@ -15,3 +15,8 @@ logging:
   level:
     io.meshcloud: INFO
     org.springframework.amqp: INFO
+
+retry:
+  wait-ended-listener:
+    enabled: true
+

@@ -3,6 +3,7 @@ package io.meshcloud.retry
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import java.util.logging.Logger
 
@@ -15,6 +16,7 @@ import java.util.logging.Logger
  * message headers so this listener knows where to send them.
  */
 @Component
+@ConditionalOnProperty(name = ["retry.wait-ended-listener.enabled"], havingValue = "true", matchIfMissing = false)
 class RetryWaitEndedRabbitListener(
     private val rabbitTemplate: RabbitTemplate
 ) {
@@ -30,7 +32,7 @@ class RetryWaitEndedRabbitListener(
         val routingKey = (headers[RetryQueueInterceptor.HEADER_ORIGINAL_ROUTING_KEY] as? String) ?: ""
 
         val retriedCount = (headers[RetryQueueInterceptor.HEADER_RETRIED_COUNT] as? Int) ?: 0
-        log.info("Re-publishing message to exchange='$exchange' routingKey='$routingKey' (retry #$retriedCount)")
+        log.info("\u001B[38;5;208mRe-publishing message\u001B[0m to exchange='$exchange' routingKey='$routingKey' (retry #$retriedCount)")
 
         rabbitTemplate.send(exchange, routingKey, message)
     }

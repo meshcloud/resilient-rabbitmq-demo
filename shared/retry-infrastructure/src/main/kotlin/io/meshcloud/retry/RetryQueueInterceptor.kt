@@ -54,7 +54,7 @@ class RetryQueueInterceptor(
 
             log.warning(
                 "Message delivery failed (attempt ${retriedCount + 1}/${MAX_RETRIES}), " +
-                        "routing to $retryQueue. Cause: ${cause.message}"
+                        "\u001B[38;5;208mrouting to $retryQueue\u001B[0m. Cause: ${cause.message}"
             )
 
             // Preserve original destination so retry-wait-ended can re-publish correctly

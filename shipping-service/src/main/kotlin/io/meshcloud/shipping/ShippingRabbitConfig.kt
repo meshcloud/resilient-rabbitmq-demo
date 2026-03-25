@@ -60,7 +60,7 @@ class ShippingRabbitConfig {
                 ) {
                     if (!retryState.isSuccessful) {
                         log.warning(
-                            "Spring Retry: attempt #${retryState.retryCount + 1} failed — ${retryState.lastException.javaClass.simpleName}"
+                            "\u001B[38;5;208mSpring Retry: attempt #${retryState.retryCount + 1} failed\u001B[0m — ${retryState.lastException.javaClass.simpleName}"
                         )
                     }
                 }
@@ -69,7 +69,7 @@ class ShippingRabbitConfig {
 
         val springRetry = MethodInterceptor { invocation ->
             try {
-                retryTemplate.execute<Any?> { invocation.proceed() }
+                retryTemplate.execute { invocation.proceed() }
             } catch (ex: RetryException) {
                 throw AmqpRejectAndDontRequeueException("Spring retry exhausted", ex.cause)
             }

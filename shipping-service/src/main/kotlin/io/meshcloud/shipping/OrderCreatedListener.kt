@@ -29,7 +29,7 @@ class OrderCreatedListener(
     @RabbitListener(queues = ["orders.created"])
     fun onOrderCreated(message: Message) {
         val body = String(message.body)
-        log.info("Received message: $body")
+        log.info("\u001B[94mReceived message\u001B[0m: $body")
 
         // Simulate failure if demo counter is active
         if (demoController.failRemainingAttempts.getAndDecrement() > 0) {
@@ -46,10 +46,10 @@ class OrderCreatedListener(
         }
 
         // Simulate processing
-        log.info("Processing order: orderId=$orderId")
+        log.info("\u001B[32mProcessing order\u001B[0m: orderId=$orderId")
         Thread.sleep(50) // simulated work
 
-        log.info("Shipping initiated for orderId=$orderId ✅")
+        log.info("\u001B[32mShipping initiated\u001B[0m for orderId=$orderId ✅")
     }
 
     private fun extractOrderId(body: String): String? {
