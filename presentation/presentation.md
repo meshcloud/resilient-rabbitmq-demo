@@ -441,7 +441,7 @@ The message was delivered, but the consumer failed to process it. Maybe a downst
 No, it can either **requeue** directly or write to a **Dead Letter Exchange**.
 
 <!--
-Unlike the producer problem, the message was received. The consumer just couldn't finish the work — this time.
+A common assumption: RabbitMQ will somehow sort it out. But out of the box, RabbitMQ offers only two options when a message fails: requeue it immediately (causing a hot retry loop — we'll see that next) or route it to a Dead Letter Exchange (which parks the message permanently, never re-delivered unless explicitly consumed from there). Neither gives you the controlled, timed backoff you actually need.
 -->
 
 ---
@@ -458,7 +458,7 @@ Unlike the producer problem, the message was received. The consumer just couldn'
 > We need to **back off** between retries.
 
 <!--
-This creates a hot retry loop. It doesn't give the downstream system time to recover.
+Immediate requeue means the failed message bounces back within milliseconds. This burns CPU and network bandwidth, hammers an already struggling dependency with an unrelenting flood of requests, and drowns the logs in identical errors — making it nearly impossible to spot the root cause. The consumer keeps retrying at full speed until the dependency recovers by chance or the whole system falls over.
 -->
 
 ---
@@ -507,10 +507,11 @@ The second primitive. A wait queue configured with TTL and a DLX acts as a delay
 ![center](diagrams/diagram-retry-ladder.svg)
 
 <!--
-Attempt 1: Consumer receives message → fails. Route to retry-1. Message sits for 1 minute.
-Attempt 2: Message returns via DLX → consumer retries → fails again. Route to retry-2. Message sits for 5 minutes. And so on.
-After all retries exhausted: Message stays in the last retry queue, acting as a soft dead-letter queue where operators can inspect and intervene.
-The system gives the failing dependency time to recover — most transient issues resolve within the first few retries.
+Attempt 1: Consumer receives message → fails. Route to retry-1. Message waits 20 seconds (demo value; ~1 minute in production).
+Attempt 2: Message returns via DLX → consumer retries → fails again. Route to retry-2. Waits 15 seconds (demo; ~5 minutes in production). And so on.
+The full ladder: retry-1 (20 s) → retry-2 (15 s) → retry-3 (5 min) → retry-4 (1 h) → retry-5 (8 h).
+After all retries are exhausted: The message stays in retry-5, acting as a soft dead-letter queue (with retries every 8h) where operators can inspect and manually intervene.
+The short TTLs in the demo are intentional so you can actually watch messages travel through the ladder live.
 -->
 
 ---
@@ -588,6 +589,16 @@ The retry-wait-ended queue is a single funnel. All five retry queues drain into 
 
 **See `ShippingRabbitConfig` in code**
 
+<!--
+The shipping service stacks two retry strategies:
+
+Inner layer — Spring Retry: 3 fast in-memory attempts with exponential backoff (500 ms → up to 5 s). Covers brief transient blips (network hiccup, momentary DB lock) without ever touching a queue. No infrastructure overhead.
+
+Outer layer — RetryQueueInterceptor: Once Spring Retry is exhausted it throws AmqpRejectAndDontRequeueException. The outer interceptor catches this and routes the message into the DLX+TTL ladder for longer back-off windows (seconds to hours).
+
+The two layers are completely independent: Spring Retry doesn't know about queues; the RetryQueueInterceptor doesn't know about in-memory retries. Together they cover the full spectrum from millisecond blips to hour-long outages.
+-->
+
 ---
 
 ## ✅ Consumer Problem — Solved
@@ -595,7 +606,7 @@ The retry-wait-ended queue is a single funnel. All five retry queues drain into 
 <img src="diagrams/consumer-summary.svg" alt="center" style="width:100%; margin-top:14px">
 
 <!--
-The system heals itself. Most issues resolve within the first few retries. Operators only get involved for the rare persistent failure.
+The two-layer approach covers the full failure spectrum: Spring Retry absorbs brief transient blips instantly in-memory (no queue overhead, no infrastructure); the DLX+TTL ladder handles extended outages with back-off windows that grow from seconds to hours. The system heals itself — operators only need to intervene for genuinely persistent failures parked in retry-5.
 -->
 
 ---
@@ -603,6 +614,10 @@ The system heals itself. Most issues resolve within the first few retries. Opera
 ## The Complete Picture
 
 ![center](diagrams/diagram-complete.svg)
+
+<!--
+Everything comes together here. The Transactional Outbox (left side) guarantees events are never lost on the producer side — the event is durable in the database before it ever touches the broker. The DLX+TTL retry ladder (right side) guarantees the consumer side heals itself after failures. Together they cover the full message lifecycle: from an atomic write in the database all the way through to eventual successful processing, surviving crashes, restarts, and broker outages at every step.
+-->
 
 ---
 
@@ -621,7 +636,11 @@ No special infrastructure · Standard RabbitMQ only · Minimal maintenance
 - Not zero-latency *(outbox ~1s; retries add minutes)*
 
 <!--
-We run this exact setup in production. Minimal maintenance, no special infrastructure, standard RabbitMQ features only — no plugins, no Debezium, no CDC.
+We run this exact setup in production. 'Boring' is a feature — no plugins, no Debezium, no CDC pipelines to operate.
+
+The monitoring signals are intentional: outbox table depth is your early-warning system for broker connectivity issues; retry-3/4/5 queue depths signal a sustained downstream outage; a non-zero retry-5 depth is your alert threshold that warrants human intervention.
+
+Know the trade-offs going in: this is at-least-once delivery, so consumers must be idempotent. The outbox poller introduces ~1 s of latency. Extended retries can delay processing by minutes or hours. These are acceptable for most use cases — but call them out explicitly so stakeholders know what they're getting.
 -->
 
 ---

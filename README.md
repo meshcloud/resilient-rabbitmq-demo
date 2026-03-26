@@ -44,6 +44,11 @@ A self-contained demo showing two complementary patterns for reliable messaging 
 
 ---
 
+## Understanding the concepts
+
+This repository contains a presentation folder that explains the concepts used in this demo application.
+The markdown version of the presentation also contains explanatory comments for every slide.
+
 ## Quick Start
 
 ### Prerequisites
